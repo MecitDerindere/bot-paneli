@@ -264,7 +264,8 @@
 
             if (shortcode) {
                 kutu.classList.remove('hidden');
-                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="320" height="460" frameborder="0" scrolling="no" allowtransparency="true" class="bg-white rounded-lg border border-slate-300 shadow-md"></iframe>`;
+                // Değişiklik burada: Genişliği 400, yüksekliği 750 yaptık ve kaydırma (scrolling) izni verdik.
+                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="400" height="750" frameborder="0" scrolling="yes" allowtransparency="true" class="bg-white rounded-lg border border-slate-300 shadow-md"></iframe>`;
             } else {
                 showToast("Bu veri formatı önizlemeyi desteklemiyor.", "error");
             }
