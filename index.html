@@ -66,4 +66,153 @@
 
         function log(mesaj, renk="#aaa") {
             const saat = new Date().toLocaleTimeString();
-            document.getElementById('log').innerHTML = `<span style="color
+            document.getElementById('log').innerHTML = `<span style="color:${renk}">[${saat}] ${mesaj}</span>`;
+        }
+
+        function ayarlariKaydet() {
+            const pat = document.getElementById('patInput').value;
+            if(!pat) return log("Lütfen token girin!", "red");
+            localStorage.setItem('gh_pat', pat);
+            document.getElementById('yonetimKismi').style.display = "block";
+            document.getElementById('repoNameDisplay').innerText = document.getElementById('repoSelect').value;
+            linkleriGetir();
+        }
+
+        async function githubApi(endpoint, method="GET", body=null) {
+            const pat = localStorage.getItem('gh_pat');
+            const options = {
+                method: method,
+                headers: { "Authorization": `token ${pat}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" }
+            };
+            if(body) options.body = JSON.stringify(body);
+            const res = await fetch(`https://api.github.com/repos/${USERNAME}/${document.getElementById('repoSelect').value}${endpoint}`, options);
+            if (!res.ok) throw new Error(await res.text());
+            return method === "GET" ? await res.json() : res;
+        }
+
+        const utf8_to_b64 = str => window.btoa(unescape(encodeURIComponent(str)));
+        const b64_to_utf8 = str => decodeURIComponent(escape(window.atob(str)));
+
+        async function linkleriGetir() {
+            log("⏳ Liste çekiliyor...", "yellow");
+            try {
+                const data = await githubApi('/contents/links.txt');
+                fileSha = data.sha;
+                const content = b64_to_utf8(data.content);
+                currentLinks = content.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                ekraniCiz();
+                log("✅ Liste başarıyla yüklendi.", "lime");
+            } catch (e) { log("❌ Hata (Dosya yok veya token yanlış): " + e.message, "red"); }
+        }
+
+        // HTML'i ekrana basan fonksiyon (Görsel yenilemeler için ayırdık)
+        function ekraniCiz() {
+            document.getElementById('linkSayisi').innerText = currentLinks.length;
+            let html = "";
+            currentLinks.forEach((link, index) => {
+                html += `
+                <div class="link-container" id="kutu-${index}">
+                    <div class="link-item">
+                        <div class="link-text"><b>${index + 1}.</b> ${link}</div>
+                        <div class="link-actions">
+                            <button class="btn-warning" onclick="onizlemeGoster(${index}, '${link}')">👁️ Önizleme</button>
+                            <button class="btn-primary" onclick="bunuGonder(${index})">🚀 Gönder</button>
+                            <button class="btn-danger" onclick="linkSil(${index})">🗑️</button>
+                        </div>
+                    </div>
+                    <div id="preview-${index}" class="preview-box"></div>
+                </div>`;
+            });
+            document.getElementById('linkListesi').innerHTML = html;
+        }
+
+        // Instagram Önizleme Fonksiyonu
+        function onizlemeGoster(index, url) {
+            const kutu = document.getElementById(`preview-${index}`);
+            if (kutu.style.display === "block") {
+                kutu.style.display = "none";
+                kutu.innerHTML = "";
+                return;
+            }
+            
+            // URL'den video ID'sini bulma (Örn: /reel/XYZ123/ -> XYZ123)
+            let shortcode = "";
+            let match = url.match(/(?:reel|p)\/([^\/?#&]+)/);
+            if (match && match[1]) shortcode = match[1];
+
+            if (shortcode) {
+                kutu.style.display = "block";
+                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="320" height="460" frameborder="0" scrolling="no" allowtransparency="true" style="background:white; border-radius:8px;"></iframe>`;
+            } else {
+                alert("Bu linkten önizleme oluşturulamadı.");
+            }
+        }
+
+        async function dosyayiGuncelle(yeniLinkArrayi, mesaj) {
+            try {
+                const yeniIcerik = yeniLinkArrayi.join('\n') + '\n';
+                await githubApi('/contents/links.txt', 'PUT', { message: mesaj, content: utf8_to_b64(yeniIcerik), sha: fileSha });
+            } catch (e) { log("❌ Güncelleme hatası: " + e.message, "red"); }
+        }
+
+        async function linkEkle() {
+            const yeni = document.getElementById('yeniLinkler').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            if(yeni.length === 0) return;
+            log("⏳ Linkler ekleniyor...", "yellow");
+            currentLinks = [...yeni, ...currentLinks];
+            await dosyayiGuncelle(currentLinks, "Panelden yeni linkler eklendi");
+            document.getElementById('yeniLinkler').value = "";
+            await linkleriGetir();
+        }
+
+        async function linkSil(index) {
+            if(!confirm("Bu linki silmek istediğinize emin misiniz?")) return;
+            currentLinks.splice(index, 1);
+            ekraniCiz(); // Görsel olarak anında sil
+            await dosyayiGuncelle(currentLinks, "Panelden link silindi");
+            await linkleriGetir();
+        }
+
+        // Ana Buton: En alttakini gönder
+        async function enAlttakiniGonder() {
+            if (currentLinks.length === 0) return alert("Gönderilecek link kalmadı!");
+            log("⏳ Bot uyandırılıyor... (Liste 15s içinde yenilenecek)", "yellow");
+            
+            document.getElementById('anaGonderBtn').disabled = true;
+            
+            // 1. Görsel olarak listeden hemen uçur (Kullanıcı rahatlasın)
+            currentLinks.pop();
+            ekraniCiz();
+
+            // 2. Botu tetikle
+            try {
+                await githubApi('/actions/workflows/bot.yml/dispatches', 'POST', { ref: "main" });
+                log("✅ Şalter açıldı! Video Telegram'a yükleniyor...", "lime");
+                
+                // 3. Botun işlemi bitirmesini bekle ve listeyi temiz olarak tekrar çek
+                setTimeout(() => {
+                    log("🔄 Liste GitHub ile senkronize ediliyor...", "yellow");
+                    linkleriGetir();
+                    document.getElementById('anaGonderBtn').disabled = false;
+                }, 15000);
+            } catch (e) { log("❌ Hata: " + e.message, "red"); }
+        }
+
+        // Özel Buton: Aradan seçileni gönder
+        async function bunuGonder(index) {
+            if(!confirm("Bu videoyu sıradaki olarak ayarlayıp göndermek istiyor musunuz?")) return;
+            log("⏳ Özel link ayarlanıyor...", "yellow");
+            
+            // Seçileni bulunduğu yerden al, en sona (hedef noktaya) koy
+            const secilenLink = currentLinks.splice(index, 1)[0]; 
+            currentLinks.push(secilenLink);
+            
+            // Dosyayı bu yeni sırayla GitHub'a kaydet
+            await dosyayiGuncelle(currentLinks, "Özel link hedef sıraya alındı");
+            
+            // Şimdi en alttakini (yani ayarladığımızı) gönderme fonksiyonunu çağır
+            enAlttakiniGonder();
+        }
+    </script>
+</body>
+</html>
