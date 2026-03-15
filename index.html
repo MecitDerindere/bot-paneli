@@ -1,188 +1,123 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Süper Bot Yönetim Paneli</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Sistem Yönetim Konsolu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        :root { 
-            --bg: #0f172a; 
-            --panel: #1e293b; 
-            --text: #f8fafc; 
-            --text-muted: #94a3b8;
-            --primary: #3b82f6; 
-            --primary-hover: #2563eb;
-            --success: #10b981; 
-            --success-hover: #059669;
-            --danger: #ef4444; 
-            --danger-hover: #dc2626;
-            --warning: #f59e0b;
-            --border: #334155;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            padding: 40px 20px; 
-            max-width: 900px; 
-            margin: 0 auto; 
-            line-height: 1.6;
-        }
+        /* Özel Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-        .header-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 40px;
-            background: linear-gradient(to right, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .card { 
-            background: var(--panel); 
-            padding: 30px; 
-            border-radius: 16px; 
-            margin-bottom: 25px; 
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
-        }
-
-        h2 { color: #e2e8f0; font-size: 1.25rem; font-weight: 600; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
-        h3 { color: #cbd5e1; font-size: 1rem; font-weight: 600; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
-        
-        input, select, textarea { 
-            width: 100%; 
-            padding: 12px 16px; 
-            margin-bottom: 15px; 
-            background: #0f172a; 
-            color: var(--text); 
-            border: 1px solid var(--border); 
-            border-radius: 8px; 
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            box-sizing: border-box; 
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-
-        button { 
-            padding: 10px 16px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: 500; 
-            font-family: 'Inter', sans-serif;
-            color: white; 
-            transition: all 0.2s; 
-            margin-right: 8px; 
-            margin-bottom: 8px; 
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary { background: var(--primary); }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);}
-        
-        .btn-success { background: var(--success); }
-        .btn-success:hover { background: var(--success-hover); transform: translateY(-1px); box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);}
-        
-        .btn-danger { background: var(--danger); padding: 10px 12px;}
-        .btn-danger:hover { background: var(--danger-hover); }
-        
-        .btn-warning { background: transparent; color: var(--warning); border: 1px solid var(--warning); }
-        .btn-warning:hover { background: var(--warning); color: #000; }
-
-        .btn-massive { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: 600; justify-content: center; margin-top: 10px; margin-bottom: 20px;}
-
-        .link-container { 
-            background: #0f172a; 
-            margin-bottom: 12px; 
-            border-radius: 12px; 
-            padding: 16px; 
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--primary); 
-            transition: all 0.3s ease; 
-        }
-        
-        .link-container:hover {
-            border-left-color: var(--success);
-            transform: translateX(4px);
-        }
-
-        .link-item { display: flex; justify-content: space-between; align-items: center; word-break: break-all; }
-        .link-text { flex-grow: 1; margin-right: 20px; font-size: 0.9rem; color: #cbd5e1;}
-        .link-text b { color: #38bdf8; font-size: 1rem;}
-        .link-actions { display: flex; gap: 8px; flex-wrap: nowrap; align-items: center;}
-        
-        .preview-box { margin-top: 20px; display: none; text-align: center; background: #000; border-radius: 12px; padding: 15px; border: 1px solid var(--border);}
-        
-        #log { 
-            font-family: 'Consolas', monospace; 
-            font-size: 0.85rem; 
-            color: var(--text-muted); 
-            margin-top: 15px; 
-            padding: 15px; 
-            background: #0b0f19; 
-            border-radius: 8px;
-            border: 1px solid #1e293b;
-        }
-
-        .badge {
-            background: #312e81;
-            color: #a5b4fc;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
+        /* Toast Bildirim Animasyonları */
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .toast-enter { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .toast-exit { animation: fadeOut 0.3s ease-out forwards; }
     </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#151f32', 900: '#0f172a' },
+                        primary: { 500: '#3b82f6', 600: '#2563eb' }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="antialiased min-h-screen flex flex-col">
 
-    <h1 class="header-title">Süper Bot Yönetim Paneli</h1>
-
-    <div class="card">
-        <h2><span style="font-size: 1.5rem;">🔑</span> Kimlik Doğrulama</h2>
-        <input type="password" id="patInput" placeholder="GitHub Personal Access Token (ghp_...)">
-        <select id="repoSelect">
-            <option value="ig-telegram-bot">🤖 Bot 1 (ig-telegram-bot)</option>
-            <option value="ig-telegram-bot2">🤖 Bot 2 (ig-telegram-bot2)</option>
-        </select>
-        <button class="btn-primary" onclick="ayarlariKaydet()" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem;">Bağlantıyı Kur ve Listeyi Çek</button>
-        <div id="log">Sistem hazır, güvenli bağlantı bekleniyor...</div>
-    </div>
-
-    <div class="card" id="yonetimKismi" style="display:none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px;">
-            <h2 style="margin: 0; border: none; padding: 0;">📡 Aktif İstasyon: <span id="repoNameDisplay" style="color: var(--primary);"></span></h2>
-            <button class="btn-warning" onclick="linkleriGetir()" style="margin: 0;">🔄 Senkronize Et</button>
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="ph ph-codesandbox-logo text-3xl text-primary-500"></i>
+                <span class="font-semibold text-lg tracking-tight">Otomasyon Konsolu <span class="text-slate-500 text-sm font-normal ml-2">v2.0</span></span>
+            </div>
+            <div class="flex items-center gap-4 text-sm text-slate-400">
+                <div class="flex items-center gap-1.5"><i class="ph ph-shield-check text-emerald-500"></i> Güvenli Bağlantı</div>
+            </div>
         </div>
-        
-        <button class="btn-success btn-massive" onclick="enAlttakiniGonder()" id="anaGonderBtn">
-            <span style="font-size: 1.3rem;">🚀</span> Sıradaki Videoyu (En Alttakini) Ateşle
-        </button>
-        
-        <h3>📥 Yeni Veri Girişi</h3>
-        <textarea id="yeniLinkler" rows="3" placeholder="Her satıra bir hedef link gelecek şekilde yapıştırın..."></textarea>
-        <button class="btn-success" onclick="linkEkle()">Veritabanına Ekle</button>
+    </header>
 
-        <h3>📋 Operasyon Kuyruğu <span class="badge" id="linkSayisi">0 Video</span></h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Sistem her zaman listenin en altındaki (sonuncu) videoyu hedef alır.</p>
-        <div id="linkListesi"></div>
-    </div>
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+        
+        <div class="w-full lg:w-1/3 flex flex-col gap-6">
+            
+            <div class="bg-slate-850 rounded-xl border border-slate-800 p-6 shadow-sm">
+                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i class="ph ph-key"></i> Sistem Erişimi
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Personal Access Token</label>
+                        <input type="password" id="patInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="ghp_...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Hedef İstasyon</label>
+                        <select id="repoSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors appearance-none">
+                            <option value="ig-telegram-bot">Bot-1 (ig-telegram-bot)</option>
+                            <option value="ig-telegram-bot2">Bot-2 (ig-telegram-bot2)</option>
+                        </select>
+                    </div>
+                    <button onclick="ayarlariKaydet()" class="w-full bg-slate-100 hover:bg-white text-slate-900 font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+                        <i class="ph ph-plug"></i> Bağlantıyı Başlat
+                    </button>
+                </div>
+            </div>
+
+            <div id="operasyonKarti" class="bg-slate-850 rounded-xl border border-slate-800 p-6 shadow-sm hidden">
+                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i class="ph ph-terminal-window"></i> Operasyon Merkezi
+                </h2>
+                <div class="space-y-5">
+                    <button onclick="enAlttakiniGonder()" id="anaGonderBtn" class="w-full bg-primary-600 hover:bg-primary-500 text-white font-medium py-3.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary-500/20">
+                        <i class="ph ph-paper-plane-right text-lg"></i> Sıradaki Videoyu İşle
+                    </button>
+                    
+                    <div class="pt-4 border-t border-slate-800">
+                        <label class="block text-xs font-medium text-slate-400 mb-2">Veritabanına Yeni Veri Girişi</label>
+                        <textarea id="yeniLinkler" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary-500 transition-colors mb-3" placeholder="Her satıra bir URI gelecek şekilde yapıştırın..."></textarea>
+                        <button onclick="linkEkle()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+                            <i class="ph ph-plus-circle"></i> Kuyruğa Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-2/3 flex flex-col hidden" id="veriTablosuKarti">
+            <div class="bg-slate-850 rounded-xl border border-slate-800 shadow-sm flex-grow flex flex-col overflow-hidden">
+                
+                <div class="px-6 py-5 border-b border-slate-800 flex items-center justify-between bg-slate-850/50">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-base font-semibold text-slate-200">Veri Kuyruğu</h2>
+                        <span id="linkSayisiBadge" class="bg-slate-800 text-slate-300 text-xs font-medium px-2.5 py-1 rounded-full border border-slate-700">0 Kayıt</span>
+                    </div>
+                    <button onclick="linkleriGetir()" class="text-slate-400 hover:text-white transition-colors p-2 rounded-md hover:bg-slate-800" title="Senkronize Et">
+                        <i class="ph ph-arrows-clockwise text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="overflow-y-auto p-4 flex-grow relative min-h-[400px]">
+                    <div id="linkListesi" class="space-y-2">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastContainer" class="fixed bottom-6 right-6 flex flex-col gap-3 z-50 pointer-events-none"></div>
 
     <script>
         const USERNAME = "MecitDerindere";
@@ -194,25 +129,53 @@
                 if(localStorage.getItem('gh_pat')) {
                     document.getElementById('patInput').value = localStorage.getItem('gh_pat');
                 }
-            } catch (e) { console.log("Yerel depolama engeli."); }
+            } catch (e) { console.log("Yerel depolama kısıtlı."); }
         };
 
-        function log(mesaj, renk="#94a3b8") {
-            const saat = new Date().toLocaleTimeString();
-            document.getElementById('log').innerHTML = `<span style="color:${renk}">[${saat}] ${mesaj}</span>`;
+        // Profesyonel Toast Bildirim Sistemi
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let icon = '<i class="ph ph-info text-blue-400 text-xl"></i>';
+            let bgClass = 'bg-slate-800 border-slate-700';
+            
+            if (type === 'success') {
+                icon = '<i class="ph ph-check-circle text-emerald-400 text-xl"></i>';
+                bgClass = 'bg-slate-850 border-emerald-900/50';
+            } else if (type === 'error') {
+                icon = '<i class="ph ph-warning-circle text-rose-400 text-xl"></i>';
+                bgClass = 'bg-slate-850 border-rose-900/50';
+            } else if (type === 'warning') {
+                icon = '<i class="ph ph-spinner-gap animate-spin text-amber-400 text-xl"></i>';
+            }
+
+            toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-lg border ${bgClass} shadow-lg shadow-black/20 pointer-events-auto min-w-[300px] max-w-md`;
+            toast.innerHTML = `${icon} <span class="text-sm font-medium text-slate-200">${message}</span>`;
+            
+            container.appendChild(toast);
+
+            // Başarılı ve hata mesajlarını 4 saniye sonra sil, spinner'ı tut
+            if(type !== 'warning') {
+                setTimeout(() => {
+                    toast.classList.replace('toast-enter', 'toast-exit');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+            return toast; // Spinner için elementi geri döndür ki sonra silebilelim
         }
 
         function ayarlariKaydet() {
             try {
                 const pat = document.getElementById('patInput').value;
-                if(!pat) return log("Lütfen geçerli bir token girin!", "#ef4444");
+                if(!pat) return showToast("Geçerli bir token gerekiyor.", "error");
                 
                 try { localStorage.setItem('gh_pat', pat); } catch(e) {} 
                 
-                document.getElementById('yonetimKismi').style.display = "block";
-                document.getElementById('repoNameDisplay').innerText = document.getElementById('repoSelect').value;
+                document.getElementById('operasyonKarti').classList.remove('hidden');
+                document.getElementById('veriTablosuKarti').classList.remove('hidden');
                 linkleriGetir();
-            } catch (error) { log("Bağlantı Hatası: " + error.message, "#ef4444"); }
+            } catch (error) { showToast("Sistem Hatası: " + error.message, "error"); }
         }
 
         async function githubApi(endpoint, method="GET", body=null) {
@@ -231,32 +194,55 @@
         const b64_to_utf8 = str => decodeURIComponent(escape(window.atob(str)));
 
         async function linkleriGetir() {
-            log("Veritabanı ile senkronize olunuyor...", "#f59e0b");
+            const loadingToast = showToast("Veritabanı senkronize ediliyor...", "warning");
             try {
                 const data = await githubApi('/contents/links.txt');
                 fileSha = data.sha;
                 const content = b64_to_utf8(data.content);
                 currentLinks = content.split('\n').map(l => l.trim()).filter(l => l.length > 0);
                 ekraniCiz();
-                log("Veritabanı bağlantısı başarılı. Liste güncel.", "#10b981");
-            } catch (e) { log("Bağlantı Reddedildi: " + e.message, "#ef4444"); }
+                loadingToast.remove();
+                showToast("Senkronizasyon tamamlandı.", "success");
+            } catch (e) { 
+                loadingToast.remove();
+                showToast("Bağlantı Reddedildi: " + e.message, "error"); 
+            }
         }
 
         function ekraniCiz() {
-            document.getElementById('linkSayisi').innerText = currentLinks.length + " Video";
+            document.getElementById('linkSayisiBadge').innerText = `${currentLinks.length} Kayıt`;
             let html = "";
+            
+            if(currentLinks.length === 0) {
+                document.getElementById('linkListesi').innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-48 text-slate-500">
+                        <i class="ph ph-database text-4xl mb-3 opacity-50"></i>
+                        <p class="text-sm">Kuyrukta veri bulunamadı.</p>
+                    </div>`;
+                return;
+            }
+
             currentLinks.forEach((link, index) => {
                 html += `
-                <div class="link-container" id="kutu-${index}">
-                    <div class="link-item">
-                        <div class="link-text"><b>${index + 1}.</b> ${link}</div>
-                        <div class="link-actions">
-                            <button class="btn-warning" onclick="onizlemeGoster(${index}, '${link}')">👁️ İzle</button>
-                            <button class="btn-primary" onclick="bunuGonder(${index})">🚀 Gönder</button>
-                            <button class="btn-danger" onclick="linkSil(${index})">✕</button>
+                <div class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-lg p-3.5 transition-all">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <span class="text-xs font-mono text-slate-500 w-6 text-right">${index + 1}.</span>
+                            <div class="truncate text-sm text-slate-300 font-mono" title="${link}">${link}</div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="onizlemeGoster(${index}, '${link}')" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-xs font-medium transition-colors flex items-center gap-1.5" title="Önizleme">
+                                <i class="ph ph-eye"></i> Görüntüle
+                            </button>
+                            <button onclick="bunuGonder(${index})" class="text-slate-400 hover:text-primary-400 bg-slate-800 hover:bg-primary-900/30 px-3 py-1.5 rounded text-xs font-medium transition-colors flex items-center gap-1.5" title="İşleme Al">
+                                <i class="ph ph-play"></i> İşle
+                            </button>
+                            <button onclick="linkSil(${index})" class="text-slate-400 hover:text-rose-400 bg-slate-800 hover:bg-rose-900/30 px-2.5 py-1.5 rounded text-xs transition-colors" title="Kayıttan Sil">
+                                <i class="ph ph-trash"></i>
+                            </button>
                         </div>
                     </div>
-                    <div id="preview-${index}" class="preview-box"></div>
+                    <div id="preview-${index}" class="hidden mt-4 pt-4 border-t border-slate-800 flex justify-center"></div>
                 </div>`;
             });
             document.getElementById('linkListesi').innerHTML = html;
@@ -264,8 +250,8 @@
 
         function onizlemeGoster(index, url) {
             const kutu = document.getElementById(`preview-${index}`);
-            if (kutu.style.display === "block") {
-                kutu.style.display = "none";
+            if (!kutu.classList.contains('hidden')) {
+                kutu.classList.add('hidden');
                 kutu.innerHTML = "";
                 return;
             }
@@ -274,10 +260,10 @@
             if (match && match[1]) shortcode = match[1];
 
             if (shortcode) {
-                kutu.style.display = "block";
-                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="320" height="460" frameborder="0" scrolling="no" allowtransparency="true" style="background:white; border-radius:8px;"></iframe>`;
+                kutu.classList.remove('hidden');
+                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="320" height="460" frameborder="0" scrolling="no" allowtransparency="true" class="bg-white rounded-lg border border-slate-700"></iframe>`;
             } else {
-                alert("Bu formattaki linkten önizleme oluşturulamadı.");
+                showToast("Bu veri formatı önizlemeyi desteklemiyor.", "error");
             }
         }
 
@@ -285,54 +271,78 @@
             try {
                 const yeniIcerik = yeniLinkArrayi.join('\n') + '\n';
                 await githubApi('/contents/links.txt', 'PUT', { message: mesaj, content: utf8_to_b64(yeniIcerik), sha: fileSha });
-            } catch (e) { log("Kayıt Hatası: " + e.message, "#ef4444"); }
+            } catch (e) { showToast("Yazma Hatası: " + e.message, "error"); throw e;}
         }
 
         async function linkEkle() {
-            const yeni = document.getElementById('yeniLinkler').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            const textarea = document.getElementById('yeniLinkler');
+            const yeni = textarea.value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
             if(yeni.length === 0) return;
-            log("Yeni veriler işleniyor...", "#f59e0b");
+            
+            const loadingToast = showToast("Kayıtlar işleniyor...", "warning");
             currentLinks = [...yeni, ...currentLinks];
-            await dosyayiGuncelle(currentLinks, "Panel üzerinden yeni linkler eklendi");
-            document.getElementById('yeniLinkler').value = "";
-            await linkleriGetir();
+            
+            try {
+                await dosyayiGuncelle(currentLinks, "Sistem paneli üzerinden veri girişi");
+                textarea.value = "";
+                await linkleriGetir();
+                loadingToast.remove();
+                showToast("Yeni kayıtlar başarıyla eklendi.", "success");
+            } catch (e) { loadingToast.remove(); }
         }
 
         async function linkSil(index) {
-            if(!confirm("Bu kaydı veritabanından tamamen silmek istediğinize emin misiniz?")) return;
+            if(!confirm("Kayıt kalıcı olarak silinecektir. Onaylıyor musunuz?")) return;
             currentLinks.splice(index, 1);
             ekraniCiz(); 
-            await dosyayiGuncelle(currentLinks, "Panel üzerinden link silindi");
-            await linkleriGetir();
+            const loadingToast = showToast("Kayıt siliniyor...", "warning");
+            try {
+                await dosyayiGuncelle(currentLinks, "Sistem paneli üzerinden veri silindi");
+                await linkleriGetir();
+                loadingToast.remove();
+            } catch(e) { loadingToast.remove(); }
         }
 
         async function enAlttakiniGonder() {
-            if (currentLinks.length === 0) return alert("Kuyrukta gönderilecek video bulunamadı!");
-            log("Bot ateşleniyor... (Sistem 15s içinde senkronize olacak)", "#f59e0b");
-            document.getElementById('anaGonderBtn').disabled = true;
-            document.getElementById('anaGonderBtn').style.opacity = "0.5";
+            if (currentLinks.length === 0) return showToast("Kuyrukta işlenecek veri bulunamadı.", "error");
+            
+            const btn = document.getElementById('anaGonderBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin text-lg"></i> Sistem Tetikleniyor...';
+            btn.classList.replace('bg-primary-600', 'bg-slate-700');
+            
             currentLinks.pop();
             ekraniCiz();
 
             try {
                 await githubApi('/actions/workflows/bot.yml/dispatches', 'POST', { ref: "main" });
-                log("Operasyon başarılı! Video Telegram'a aktarılıyor...", "#10b981");
+                showToast("Sistem başarıyla tetiklendi. İşlem arka planda yürütülüyor.", "success");
+                
                 setTimeout(() => {
-                    log("Veritabanı ile yeniden senkronize olunuyor...", "#f59e0b");
                     linkleriGetir();
-                    document.getElementById('anaGonderBtn').disabled = false;
-                    document.getElementById('anaGonderBtn').style.opacity = "1";
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="ph ph-paper-plane-right text-lg"></i> Sıradaki Videoyu İşle';
+                    btn.classList.replace('bg-slate-700', 'bg-primary-600');
                 }, 15000);
-            } catch (e) { log("Tetikleme Hatası: " + e.message, "#ef4444"); }
+            } catch (e) { 
+                showToast("Tetikleme Hatası: " + e.message, "error"); 
+                btn.disabled = false;
+                btn.innerHTML = '<i class="ph ph-paper-plane-right text-lg"></i> Sıradaki Videoyu İşle';
+                btn.classList.replace('bg-slate-700', 'bg-primary-600');
+            }
         }
 
         async function bunuGonder(index) {
-            if(!confirm("Bu videoyu kuyruğun en sonuna alıp hemen göndermek istiyor musunuz?")) return;
-            log("Özel hedef ayarlanıyor...", "#f59e0b");
+            if(!confirm("Bu kaydı kuyruğun sonuna alıp işlemi derhal başlatmak istiyor musunuz?")) return;
             const secilenLink = currentLinks.splice(index, 1)[0]; 
             currentLinks.push(secilenLink);
-            await dosyayiGuncelle(currentLinks, "Özel link operasyon sırasına alındı");
-            enAlttakiniGonder();
+            
+            const loadingToast = showToast("Özel rota ayarlanıyor...", "warning");
+            try {
+                await dosyayiGuncelle(currentLinks, "Özel operasyon sırası atandı");
+                loadingToast.remove();
+                enAlttakiniGonder();
+            } catch(e) { loadingToast.remove(); }
         }
     </script>
 </body>
