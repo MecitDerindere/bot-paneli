@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="tr" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +8,13 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
         
         /* Özel Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #f3f4f6; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
         /* Toast Bildirim Animasyonları */
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
@@ -28,8 +28,8 @@
             theme: {
                 extend: {
                     colors: {
-                        slate: { 850: '#151f32', 900: '#0f172a' },
-                        primary: { 500: '#3b82f6', 600: '#2563eb' }
+                        'meta-blue': { 500: '#1877F2', 600: '#1669D6' }, // Meta Marka Mavisi
+                        slate: { 50: '#f9fafb', 100: '#f3f4f6', 200: '#e5e7eb', 500: '#6b7280', 800: '#1f2937' }
                     }
                 }
             }
@@ -38,14 +38,14 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col">
 
-    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <i class="ph ph-codesandbox-logo text-3xl text-primary-500"></i>
-                <span class="font-semibold text-lg tracking-tight">Otomasyon Konsolu <span class="text-slate-500 text-sm font-normal ml-2">v2.0</span></span>
+                <i class="ph ph-codesandbox-logo text-3xl text-meta-blue-500"></i>
+                <span class="font-semibold text-lg text-slate-800 tracking-tight">Otomasyon Konsolu <span class="text-slate-500 text-sm font-normal ml-2">v2.1</span></span>
             </div>
-            <div class="flex items-center gap-4 text-sm text-slate-400">
-                <div class="flex items-center gap-1.5"><i class="ph ph-shield-check text-emerald-500"></i> Güvenli Bağlantı</div>
+            <div class="flex items-center gap-4 text-sm text-slate-500">
+                <div class="flex items-center gap-1.5"><i class="ph ph-shield-check text-emerald-600"></i> Güvenli Bağlantı</div>
             </div>
         </div>
     </header>
@@ -54,42 +54,42 @@
         
         <div class="w-full lg:w-1/3 flex flex-col gap-6">
             
-            <div class="bg-slate-850 rounded-xl border border-slate-800 p-6 shadow-sm">
-                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <i class="ph ph-key"></i> Sistem Erişimi
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i class="ph ph-key text-slate-400"></i> Sistem Erişimi
                 </h2>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Personal Access Token</label>
-                        <input type="password" id="patInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="ghp_...">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Personal Access Token</label>
+                        <input type="password" id="patInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-meta-blue-500 focus:ring-1 focus:ring-meta-blue-500 transition-colors" placeholder="ghp_...">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-400 mb-1">Hedef İstasyon</label>
-                        <select id="repoSelect" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors appearance-none">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Hedef İstasyon</label>
+                        <select id="repoSelect" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-meta-blue-500 focus:ring-1 focus:ring-meta-blue-500 transition-colors appearance-none text-slate-700">
                             <option value="ig-telegram-bot">Bot-1 (ig-telegram-bot)</option>
                             <option value="ig-telegram-bot2">Bot-2 (ig-telegram-bot2)</option>
                         </select>
                     </div>
-                    <button onclick="ayarlariKaydet()" class="w-full bg-slate-100 hover:bg-white text-slate-900 font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+                    <button onclick="ayarlariKaydet()" class="w-full bg-meta-blue-500 hover:bg-meta-blue-600 text-white font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
                         <i class="ph ph-plug"></i> Bağlantıyı Başlat
                     </button>
                 </div>
             </div>
 
-            <div id="operasyonKarti" class="bg-slate-850 rounded-xl border border-slate-800 p-6 shadow-sm hidden">
-                <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <i class="ph ph-terminal-window"></i> Operasyon Merkezi
+            <div id="operasyonKarti" class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hidden">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <i class="ph ph-terminal-window text-slate-400"></i> Operasyon Merkezi
                 </h2>
                 <div class="space-y-5">
-                    <button onclick="enAlttakiniGonder()" id="anaGonderBtn" class="w-full bg-primary-600 hover:bg-primary-500 text-white font-medium py-3.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-primary-500/20">
+                    <button onclick="enAlttakiniGonder()" id="anaGonderBtn" class="w-full bg-meta-blue-500 hover:bg-meta-blue-600 text-white font-medium py-3.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-meta-blue-500/20">
                         <i class="ph ph-paper-plane-right text-lg"></i> Sıradaki Videoyu İşle
                     </button>
                     
-                    <div class="pt-4 border-t border-slate-800">
-                        <label class="block text-xs font-medium text-slate-400 mb-2">Veritabanına Yeni Veri Girişi</label>
-                        <textarea id="yeniLinkler" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary-500 transition-colors mb-3" placeholder="Her satıra bir URI gelecek şekilde yapıştırın..."></textarea>
-                        <button onclick="linkEkle()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
-                            <i class="ph ph-plus-circle"></i> Kuyruğa Ekle
+                    <div class="pt-4 border-t border-slate-200">
+                        <label class="block text-xs font-medium text-slate-600 mb-2">Veritabanına Yeni Veri Girişi</label>
+                        <textarea id="yeniLinkler" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-meta-blue-500 transition-colors mb-3" placeholder="Her satıra bir URI gelecek şekilde yapıştırın..."></textarea>
+                        <button onclick="linkEkle()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-medium py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center gap-2">
+                            <i class="ph ph-plus-circle text-slate-600"></i> Kuyruğa Ekle
                         </button>
                     </div>
                 </div>
@@ -97,14 +97,14 @@
         </div>
 
         <div class="w-full lg:w-2/3 flex flex-col hidden" id="veriTablosuKarti">
-            <div class="bg-slate-850 rounded-xl border border-slate-800 shadow-sm flex-grow flex flex-col overflow-hidden">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex-grow flex flex-col overflow-hidden">
                 
-                <div class="px-6 py-5 border-b border-slate-800 flex items-center justify-between bg-slate-850/50">
+                <div class="px-6 py-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                     <div class="flex items-center gap-3">
-                        <h2 class="text-base font-semibold text-slate-200">Veri Kuyruğu</h2>
-                        <span id="linkSayisiBadge" class="bg-slate-800 text-slate-300 text-xs font-medium px-2.5 py-1 rounded-full border border-slate-700">0 Kayıt</span>
+                        <h2 class="text-base font-semibold text-slate-800">Veri Kuyruğu</h2>
+                        <span id="linkSayisiBadge" class="bg-slate-200 text-slate-700 text-xs font-medium px-2.5 py-1 rounded-full border border-slate-300">0 Kayıt</span>
                     </div>
-                    <button onclick="linkleriGetir()" class="text-slate-400 hover:text-white transition-colors p-2 rounded-md hover:bg-slate-800" title="Senkronize Et">
+                    <button onclick="linkleriGetir()" class="text-slate-400 hover:text-slate-800 transition-colors p-2 rounded-md hover:bg-slate-100" title="Senkronize Et">
                         <i class="ph ph-arrows-clockwise text-lg"></i>
                     </button>
                 </div>
@@ -132,37 +132,40 @@
             } catch (e) { console.log("Yerel depolama kısıtlı."); }
         };
 
-        // Profesyonel Toast Bildirim Sistemi
+        // Profesyonel Toast Bildirim Sistemi (Açık Tema)
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
             
-            let icon = '<i class="ph ph-info text-blue-400 text-xl"></i>';
-            let bgClass = 'bg-slate-800 border-slate-700';
+            let icon = '<i class="ph ph-info text-meta-blue-500 text-xl"></i>';
+            let bgClass = 'bg-white border-slate-200';
+            let textClass = 'text-slate-800';
             
             if (type === 'success') {
-                icon = '<i class="ph ph-check-circle text-emerald-400 text-xl"></i>';
-                bgClass = 'bg-slate-850 border-emerald-900/50';
+                icon = '<i class="ph ph-check-circle text-emerald-600 text-xl"></i>';
+                bgClass = 'bg-white border-emerald-200';
+                textClass = 'text-emerald-900';
             } else if (type === 'error') {
-                icon = '<i class="ph ph-warning-circle text-rose-400 text-xl"></i>';
-                bgClass = 'bg-slate-850 border-rose-900/50';
+                icon = '<i class="ph ph-warning-circle text-rose-600 text-xl"></i>';
+                bgClass = 'bg-white border-rose-200';
+                textClass = 'text-rose-900';
             } else if (type === 'warning') {
-                icon = '<i class="ph ph-spinner-gap animate-spin text-amber-400 text-xl"></i>';
+                icon = '<i class="ph ph-spinner-gap animate-spin text-amber-600 text-xl"></i>';
+                textClass = 'text-amber-900';
             }
 
-            toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-lg border ${bgClass} shadow-lg shadow-black/20 pointer-events-auto min-w-[300px] max-w-md`;
-            toast.innerHTML = `${icon} <span class="text-sm font-medium text-slate-200">${message}</span>`;
+            toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-lg border ${bgClass} shadow-lg shadow-slate-900/10 pointer-events-auto min-w-[300px] max-w-md`;
+            toast.innerHTML = `${icon} <span class="text-sm font-medium ${textClass}">${message}</span>`;
             
             container.appendChild(toast);
 
-            // Başarılı ve hata mesajlarını 4 saniye sonra sil, spinner'ı tut
             if(type !== 'warning') {
                 setTimeout(() => {
                     toast.classList.replace('toast-enter', 'toast-exit');
                     setTimeout(() => toast.remove(), 300);
                 }, 4000);
             }
-            return toast; // Spinner için elementi geri döndür ki sonra silebilelim
+            return toast; 
         }
 
         function ayarlariKaydet() {
@@ -215,8 +218,8 @@
             
             if(currentLinks.length === 0) {
                 document.getElementById('linkListesi').innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-48 text-slate-500">
-                        <i class="ph ph-database text-4xl mb-3 opacity-50"></i>
+                    <div class="flex flex-col items-center justify-center h-48 text-slate-400">
+                        <i class="ph ph-database text-4xl mb-3 opacity-60"></i>
                         <p class="text-sm">Kuyrukta veri bulunamadı.</p>
                     </div>`;
                 return;
@@ -224,25 +227,25 @@
 
             currentLinks.forEach((link, index) => {
                 html += `
-                <div class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-lg p-3.5 transition-all">
+                <div class="group bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-3.5 transition-all shadow-sm">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div class="flex items-center gap-3 overflow-hidden">
-                            <span class="text-xs font-mono text-slate-500 w-6 text-right">${index + 1}.</span>
-                            <div class="truncate text-sm text-slate-300 font-mono" title="${link}">${link}</div>
+                            <span class="text-xs font-mono text-slate-400 w-6 text-right">${index + 1}.</span>
+                            <div class="truncate text-sm text-slate-700 font-mono" title="${link}">${link}</div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <button onclick="onizlemeGoster(${index}, '${link}')" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-xs font-medium transition-colors flex items-center gap-1.5" title="Önizleme">
+                            <button onclick="onizlemeGoster(${index}, '${link}')" class="text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 px-3 py-1.5 rounded text-xs font-medium border border-slate-200 transition-colors flex items-center gap-1.5" title="Önizleme">
                                 <i class="ph ph-eye"></i> Görüntüle
                             </button>
-                            <button onclick="bunuGonder(${index})" class="text-slate-400 hover:text-primary-400 bg-slate-800 hover:bg-primary-900/30 px-3 py-1.5 rounded text-xs font-medium transition-colors flex items-center gap-1.5" title="İşleme Al">
+                            <button onclick="bunuGonder(${index})" class="text-slate-600 hover:text-meta-blue-500 bg-white hover:bg-meta-blue-50 px-3 py-1.5 rounded text-xs font-medium border border-slate-200 hover:border-meta-blue-300 transition-colors flex items-center gap-1.5" title="İşleme Al">
                                 <i class="ph ph-play"></i> İşle
                             </button>
-                            <button onclick="linkSil(${index})" class="text-slate-400 hover:text-rose-400 bg-slate-800 hover:bg-rose-900/30 px-2.5 py-1.5 rounded text-xs transition-colors" title="Kayıttan Sil">
+                            <button onclick="linkSil(${index})" class="text-slate-500 hover:text-rose-600 bg-white hover:bg-rose-50 px-2.5 py-1.5 rounded text-xs border border-slate-200 hover:border-rose-300 transition-colors" title="Kayıttan Sil">
                                 <i class="ph ph-trash"></i>
                             </button>
                         </div>
                     </div>
-                    <div id="preview-${index}" class="hidden mt-4 pt-4 border-t border-slate-800 flex justify-center"></div>
+                    <div id="preview-${index}" class="hidden mt-4 pt-4 border-t border-slate-200 flex justify-center bg-slate-100 rounded-lg p-3"></div>
                 </div>`;
             });
             document.getElementById('linkListesi').innerHTML = html;
@@ -261,7 +264,7 @@
 
             if (shortcode) {
                 kutu.classList.remove('hidden');
-                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="320" height="460" frameborder="0" scrolling="no" allowtransparency="true" class="bg-white rounded-lg border border-slate-700"></iframe>`;
+                kutu.innerHTML = `<iframe src="https://www.instagram.com/p/${shortcode}/embed/captioned" width="320" height="460" frameborder="0" scrolling="no" allowtransparency="true" class="bg-white rounded-lg border border-slate-300 shadow-md"></iframe>`;
             } else {
                 showToast("Bu veri formatı önizlemeyi desteklemiyor.", "error");
             }
@@ -309,7 +312,8 @@
             const btn = document.getElementById('anaGonderBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="ph ph-spinner-gap animate-spin text-lg"></i> Sistem Tetikleniyor...';
-            btn.classList.replace('bg-primary-600', 'bg-slate-700');
+            btn.classList.replace('bg-meta-blue-500', 'bg-slate-400');
+            btn.classList.remove('shadow-meta-blue-500/20');
             
             currentLinks.pop();
             ekraniCiz();
@@ -322,13 +326,15 @@
                     linkleriGetir();
                     btn.disabled = false;
                     btn.innerHTML = '<i class="ph ph-paper-plane-right text-lg"></i> Sıradaki Videoyu İşle';
-                    btn.classList.replace('bg-slate-700', 'bg-primary-600');
+                    btn.classList.replace('bg-slate-400', 'bg-meta-blue-500');
+                    btn.classList.add('shadow-meta-blue-500/20');
                 }, 15000);
             } catch (e) { 
                 showToast("Tetikleme Hatası: " + e.message, "error"); 
                 btn.disabled = false;
                 btn.innerHTML = '<i class="ph ph-paper-plane-right text-lg"></i> Sıradaki Videoyu İşle';
-                btn.classList.replace('bg-slate-700', 'bg-primary-600');
+                btn.classList.replace('bg-slate-400', 'bg-meta-blue-500');
+                btn.classList.add('shadow-meta-blue-500/20');
             }
         }
 
