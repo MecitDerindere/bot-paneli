@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Süper Bot Yönetim Paneli</title>
     <style>
-        :root { --bg: #121212; --panel: #1e1e1e; --text: #e0e0e0; --primary: #007bff; --success: #28a745; --danger: #dc3545; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; max-width: 800px; margin: 0 auto; }
+        :root { --bg: #121212; --panel: #1e1e1e; --text: #e0e0e0; --primary: #007bff; --success: #28a745; --danger: #dc3545; --warning: #ffc107;}
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; max-width: 900px; margin: 0 auto; }
         .card { background: var(--panel); padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
         h1, h2, h3 { color: var(--primary); margin-top: 0; }
         input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #2d2d2d; color: white; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
-        button { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin-right: 5px; margin-bottom: 5px; }
+        button { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin-right: 5px; margin-bottom: 5px; font-size: 13px;}
         .btn-primary { background: var(--primary); }
         .btn-success { background: var(--success); }
         .btn-danger { background: var(--danger); }
-        button:hover { opacity: 0.8; }
-        .link-item { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 10px; margin-bottom: 5px; border-radius: 5px; word-break: break-all; }
-        .link-item div { flex-grow: 1; margin-right: 15px; font-size: 14px; }
-        .link-actions button { font-size: 12px; padding: 5px 10px; margin: 0; margin-left: 5px; }
-        #log { font-family: monospace; font-size: 12px; color: #aaa; margin-top: 10px; white-space: pre-wrap; }
+        .btn-warning { background: var(--warning); color: #000;}
+        button:hover { opacity: 0.8; transform: translateY(-1px); }
+        
+        .link-container { background: #2a2a2a; margin-bottom: 8px; border-radius: 8px; padding: 12px; border-left: 4px solid var(--primary); transition: all 0.3s ease; }
+        .link-item { display: flex; justify-content: space-between; align-items: center; word-break: break-all; }
+        .link-text { flex-grow: 1; margin-right: 15px; font-size: 14px; }
+        .link-actions { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;}
+        .preview-box { margin-top: 15px; display: none; text-align: center; background: #111; border-radius: 8px; padding: 10px;}
+        
+        #log { font-family: monospace; font-size: 13px; color: #aaa; margin-top: 10px; white-space: pre-wrap; padding: 10px; background: #000; border-radius: 5px;}
     </style>
 </head>
 <body>
@@ -32,21 +37,21 @@
             <option value="ig-telegram-bot">🤖 Bot 1 (ig-telegram-bot)</option>
             <option value="ig-telegram-bot2">🤖 Bot 2 (ig-telegram-bot2)</option>
         </select>
-        <button class="btn-primary" onclick="ayarlariKaydet()">Kaydet ve Bağlan</button>
-        <div id="log"></div>
+        <button class="btn-primary" onclick="ayarlariKaydet()" style="padding: 12px 20px; font-size: 15px;">Kaydet ve Bağlan</button>
+        <div id="log">Sistem bekleniyor...</div>
     </div>
 
     <div class="card" id="yonetimKismi" style="display:none;">
         <h2>2. Link Yönetimi (<span id="repoNameDisplay"></span>)</h2>
         <button class="btn-primary" onclick="linkleriGetir()">🔄 Listeyi Yenile</button>
-        <button class="btn-success" onclick="botuTetikle()">▶️ Sıradakini (En Alttakini) Gönder</button>
+        <button class="btn-success" onclick="enAlttakiniGonder()" id="anaGonderBtn">▶️ Sıradakini (En Alttakini) Gönder</button>
         
         <h3>Yeni Link Ekle</h3>
         <textarea id="yeniLinkler" rows="3" placeholder="Her satıra bir link gelecek şekilde yapıştırın..."></textarea>
         <button class="btn-success" onclick="linkEkle()">➕ Linkleri Listeye Ekle</button>
 
         <h3>Mevcut Liste (<span id="linkSayisi">0</span> Video)</h3>
-        <p style="font-size: 12px; color: #888;">Not: Sistem en alttaki videoyu gönderir.</p>
+        <p style="font-size: 12px; color: #888;">Not: Sistem en alttaki (sonuncu) videoyu gönderir.</p>
         <div id="linkListesi"></div>
     </div>
 
@@ -55,109 +60,10 @@
         let fileSha = ""; 
         let currentLinks = [];
 
-        // Sayfa açıldığında token'ı hatırla
         window.onload = () => {
             if(localStorage.getItem('gh_pat')) document.getElementById('patInput').value = localStorage.getItem('gh_pat');
         };
 
         function log(mesaj, renk="#aaa") {
-            document.getElementById('log').innerHTML = `<span style="color:${renk}">${mesaj}</span>`;
-        }
-
-        function ayarlariKaydet() {
-            const pat = document.getElementById('patInput').value;
-            if(!pat) return log("Lütfen token girin!", "red");
-            localStorage.setItem('gh_pat', pat);
-            document.getElementById('yonetimKismi').style.display = "block";
-            document.getElementById('repoNameDisplay').innerText = document.getElementById('repoSelect').value;
-            linkleriGetir();
-        }
-
-        async function githubApi(endpoint, method="GET", body=null) {
-            const pat = localStorage.getItem('gh_pat');
-            const options = {
-                method: method,
-                headers: { "Authorization": `token ${pat}`, "Accept": "application/vnd.github.v3+json", "Content-Type": "application/json" }
-            };
-            if(body) options.body = JSON.stringify(body);
-            const res = await fetch(`https://api.github.com/repos/${USERNAME}/${document.getElementById('repoSelect').value}${endpoint}`, options);
-            if (!res.ok) throw new Error(await res.text());
-            return method === "GET" ? await res.json() : res;
-        }
-
-        // Base64 Çevirici (Türkçe/Özel karakterleri bozmamak için)
-        const utf8_to_b64 = str => window.btoa(unescape(encodeURIComponent(str)));
-        const b64_to_utf8 = str => decodeURIComponent(escape(window.atob(str)));
-
-        async function linkleriGetir() {
-            log("⏳ Liste çekiliyor...");
-            try {
-                const data = await githubApi('/contents/links.txt');
-                fileSha = data.sha;
-                const content = b64_to_utf8(data.content);
-                currentLinks = content.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                
-                document.getElementById('linkSayisi').innerText = currentLinks.length;
-                let html = "";
-                currentLinks.forEach((link, index) => {
-                    html += `<div class="link-item">
-                                <div><b>${index + 1}.</b> ${link}</div>
-                                <div class="link-actions">
-                                    <button class="btn-primary" onclick="bunuGonder(${index})">🚀 Bunu Gönder</button>
-                                    <button class="btn-danger" onclick="linkSil(${index})">🗑️ Sil</button>
-                                </div>
-                             </div>`;
-                });
-                document.getElementById('linkListesi').innerHTML = html;
-                log("✅ Liste başarıyla yüklendi.", "lime");
-            } catch (e) { log("❌ Hata (Dosya yok veya token yanlış): " + e.message, "red"); }
-        }
-
-        async function dosyayiGuncelle(yeniLinkArrayi, mesaj) {
-            log("⏳ GitHub güncelleniyor...");
-            try {
-                const yeniIcerik = yeniLinkArrayi.join('\n') + '\n';
-                await githubApi('/contents/links.txt', 'PUT', {
-                    message: mesaj,
-                    content: utf8_to_b64(yeniIcerik),
-                    sha: fileSha
-                });
-                await linkleriGetir();
-                log(`✅ ${mesaj}`, "lime");
-            } catch (e) { log("❌ Güncelleme hatası: " + e.message, "red"); }
-        }
-
-        async function linkEkle() {
-            const yeni = document.getElementById('yeniLinkler').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            if(yeni.length === 0) return;
-            const birlesik = [...yeni, ...currentLinks]; // Yeni eklenenleri üste koyar (alttan eridiği için)
-            await dosyayiGuncelle(birlesik, "Paneli kullanarak yeni linkler eklendi");
-            document.getElementById('yeniLinkler').value = "";
-        }
-
-        async function linkSil(index) {
-            if(!confirm("Bu linki silmek istediğinize emin misiniz?")) return;
-            currentLinks.splice(index, 1);
-            await dosyayiGuncelle(currentLinks, "Paneli kullanarak link silindi");
-        }
-
-        async function bunuGonder(index) {
-            if(!confirm("Bu videoyu sıradaki olarak ayarlayıp göndermek istiyor musunuz?")) return;
-            log("⏳ Link hazırlanıyor ve bot tetikleniyor...");
-            const secilenLink = currentLinks.splice(index, 1)[0]; // Linki bulunduğu yerden çıkar
-            currentLinks.push(secilenLink); // En alta (gönderilecek sıraya) koy
-            
-            await dosyayiGuncelle(currentLinks, "Özel link seçildi");
-            await botuTetikle();
-        }
-
-        async function botuTetikle() {
-            log("⏳ Bot uyandırılıyor...", "yellow");
-            try {
-                await githubApi('/actions/workflows/bot.yml/dispatches', 'POST', { ref: "main" });
-                log("✅ Şalter açıldı! 15 saniye içinde Telegram'a düşecek.", "lime");
-            } catch (e) { log("❌ Tetikleme hatası: " + e.message, "red"); }
-        }
-    </script>
-</body>
-</html>
+            const saat = new Date().toLocaleTimeString();
+            document.getElementById('log').innerHTML = `<span style="color
